@@ -18,6 +18,8 @@ namespace LoneDruidSharpRewrite.Utilities
 
         public readonly MenuItem AutoTalonMenu;
 
+        public readonly MenuItem AutoMidasMenu;
+
         public readonly MenuItem BearChaseMenu;
 
         public Menu Menu { get; private set; }
@@ -28,7 +30,9 @@ namespace LoneDruidSharpRewrite.Utilities
             this.OnlyBearLastHitMenu = new MenuItem("OnlyBearLastHitMenu", "OnlyBearLastHitMenu").SetValue(new KeyBind('Z', KeyBindType.Press)).SetTooltip("only bear will go last hit");
             this.CombinedLastHitMenu = new MenuItem("CombinedLastHitMenu", "CombinedLastHitMenu").SetValue(new KeyBind('X', KeyBindType.Press)).SetTooltip("both hero and bear last hit");
             this.AutoTalonMenu = new MenuItem("Auto Iron Talon", "Auto Iron Talon").SetValue(new KeyBind('C', KeyBindType.Toggle));
+            this.AutoMidasMenu = new MenuItem("Auto Midas", "Auto Midas").SetValue(new KeyBind('C', KeyBindType.Toggle));
             this.BearChaseMenu = new MenuItem("BearChaseMenu", "BearChaseMenu").SetValue(new KeyBind('D', KeyBindType.Press)).SetTooltip("press it and rightclick enemy, bear will keep chasing until you control bear again");
+            this.Menu.AddItem(this.AutoMidasMenu);
             this.Menu.AddItem(this.OnlyBearLastHitMenu);
             this.Menu.AddItem(this.CombinedLastHitMenu);
             this.Menu.AddItem(this.AutoTalonMenu);
@@ -56,6 +60,14 @@ namespace LoneDruidSharpRewrite.Utilities
             get
             {
                 return this.CombinedLastHitMenu.GetValue<KeyBind>().Active;
+            }
+        }
+
+        public bool AutoMidasModeOn
+        {
+            get
+            {
+                return this.AutoMidasMenu.GetValue<KeyBind>().Active; ;
             }
         }
 

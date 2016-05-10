@@ -77,19 +77,19 @@
   <ItemGroup>
     <Reference Include="Ensage, Version=0.0.0.1, Culture=neutral, PublicKeyToken=a41ba14f653257a6, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\PlaySharp\LeagueSharp\System\Ensage.dll</HintPath>
+      <HintPath>C:\PlaySharp2\System\Ensage.dll</HintPath>
     </Reference>
     <Reference Include="Ensage.Common">
-      <HintPath>C:\PlaySharp\LeagueSharp\System\Ensage.Common.dll</HintPath>
+      <HintPath>C:\PlaySharp2\System\Ensage.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\PlaySharp\LeagueSharp\System\SharpDX.dll</HintPath>
+      <HintPath>C:\PlaySharp2\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>C:\PlaySharp\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\PlaySharp2\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.XInput">
-      <HintPath>C:\PlaySharp\LeagueSharp\System\SharpDX.XInput.dll</HintPath>
+      <HintPath>C:\PlaySharp2\System\SharpDX.XInput.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -117,6 +117,7 @@
     <Compile Include="Utilities\Move.cs" />
     <Compile Include="Utilities\Sleeper.cs" />
     <Compile Include="Utilities\TargetFind.cs" />
+    <Compile Include="Utilities\UnitOrbwalk.cs" />
     <Compile Include="Variable.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -14,31 +14,46 @@ namespace LoneDruidSharpRewrite.Utilities
 {
     public class AutoMidas
     {
-        public Item MidasOnBear;
+        private Hero me
+        {
+            get
+            {
+                return Variable.Hero;
+            }
+        }
 
-        public bool bearHasMidas;
+        private Unit bear
+        {
+            get
+            {
+                return Variable.Bear;
+            }
+        }
 
-        public Unit midasTarget;
+        private Item midas;
+
+        private Unit midasTarget;
 
         public AutoMidas()
         {
-            this.FindMidasOnBear();
         }
 
-        //
-        public void FindMidasOnBear()
+        private bool HasMidasOn(Unit unit)
         {
-            if(Variable.Bear == null || !Variable.Bear.IsValid || !Variable.Bear.IsAlive)
+            return unit.Inventory.Items.Any(x => x.Name == "item_hand_of_midas" && x.CanBeCasted());
+        }
+
+        private void FindMidasOn(Unit unit)
+        {
+            if (HasMidasOn(unit))
             {
-                return;
+                this.midas = unit.FindItem("item_hand_of_midas");         
             }
-            var bearItems = Variable.Bear.Inventory.Items.ToList();
-            this.MidasOnBear = bearItems.Where(x => x.Name == "item_hand_of_midas").DefaultIfEmpty(null).FirstOrDefault();
-            this.bearHasMidas = bearItems.Any(x => x.Name == "item_hand_of_midas");
         }
 
-        public void getMidasCreeps()
+        public void getMidasCreeps(Unit src)
         {
+            if (src == null) return;
             var midasTarget = ObjectManager.GetEntities<Unit>()
                         .Where(
                             x =>
@@ -46,7 +61,8 @@ namespace LoneDruidSharpRewrite.Utilities
                                 (x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Lane ||
                                  x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Siege ||
                                  x.ClassID == ClassID.CDOTA_BaseNPC_Creep_Neutral) && x.IsSpawned && x.IsAlive &&
-                                x.Distance2D(Variable.Bear) <= this.MidasOnBear.CastRange)
+                                 !x.IsMagicImmune() &&
+                                 x.Distance2D(src) <= 600 + 100)
                                 .OrderByDescending(x => x.Health).DefaultIfEmpty(null).FirstOrDefault();
 
             if(midasTarget == null)
@@ -54,21 +70,36 @@ namespace LoneDruidSharpRewrite.Utilities
                 this.midasTarget = null;
                 return;
             }
-
             this.midasTarget = midasTarget;
         }
 
-        public void Use()
+        public void Use(Item midas, Unit src, Unit target)
         {
-            FindMidasOnBear();
-            if (!this.bearHasMidas || !this.MidasOnBear.CanBeCasted() || this.midasTarget == null)
+            if (src == null) return;
+            if (midas == null) return;
+            var UseCond = !src.IsChanneling() && src.IsAlive;
+            if (!UseCond) return;
+            if (target == null) return;
+            if (Utils.SleepCheck("midas"))
             {
-                return;
-            }            
-            getMidasCreeps();        
-            if(this.midasTarget != null)
+                midas.UseAbility(target);
+                Utils.Sleep(1000, "midas");
+            }
+        }
+
+        public void Execute()
+        {
+            if (HasMidasOn(me))
             {
-                this.MidasOnBear.UseAbility(this.midasTarget);
+                FindMidasOn(me);
+                getMidasCreeps(me);
+                Use(this.midas, me, this.midasTarget);
+            }
+            if (HasMidasOn(bear))
+            {
+                FindMidasOn(bear);
+                getMidasCreeps(bear);
+                Use(this.midas, bear, this.midasTarget);
             }
         }
     }

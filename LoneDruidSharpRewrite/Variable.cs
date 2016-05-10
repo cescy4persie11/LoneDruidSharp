@@ -39,6 +39,14 @@ namespace LoneDruidSharpRewrite
             }
         }
 
+        public static bool AutoMidasModeOn
+        {
+            get
+            {
+                return MenuManager.AutoMidasModeOn;
+            }
+        }
+
         public static bool BearChaseModeOn
         {
             get

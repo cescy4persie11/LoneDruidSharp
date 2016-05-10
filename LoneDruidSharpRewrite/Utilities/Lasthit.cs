@@ -181,6 +181,7 @@ namespace LoneDruidSharpRewrite.Utilities
             this.getKillableCreep(this._LowestHpCreep, true);
             if (this._creepTarget == null) return;
 
+
             if (this._creepTarget.IsValid && this._creepTarget.IsVisible && this._creepTarget.IsAlive)
             {
                 var damageThreshold = GetDamangeOnUnit(this.Bear, _creepTarget, 0);

@@ -9,6 +9,7 @@ using Ensage.Common.Extensions;
 using Ensage.Common.Objects;
 using global::LoneDruidSharpRewrite.Abilities;
 using global::LoneDruidSharpRewrite.Utilities;
+using Ensage.Common.Menu;
 
 namespace LoneDruidSharpRewrite
 {
@@ -113,7 +114,9 @@ namespace LoneDruidSharpRewrite
             
             //draw default menu
             drawText.DrawTextOnlyBearLastHitText(Variable.OnlyBearLastHitActive);
-            drawText.DrawTextCombinedLastHitText(Variable.CombinedLastHitActive);
+            //drawText.DrawTextCombinedLastHitText(Variable.CombinedLastHitActive);
+            drawText.DrawTextAutoIronTalonText(Variable.AutoTalonActive);
+            drawText.DrawTextAutoMidasText(Variable.AutoMidasModeOn);
             drawText.DrawTextBearChaseText(Variable.BearChaseModeOn);
             if (Variable.BearChaseModeOn)
             {
@@ -134,7 +137,6 @@ namespace LoneDruidSharpRewrite
             }
             
             Variable.EnemyTeam = Me.GetEnemyTeam();
-            Variable.Bear = ObjectManager.GetEntities<Unit>().Where(unit => unit.ClassID.Equals(ClassID.CDOTA_Unit_SpiritBear)).FirstOrDefault();
             Variable.MenuManager = new MenuManager(Me.Name);
             Variable.SummonSpiritBear = new SummonSpiritBear(Me.Spellbook.Spell1);
             Variable.Rabid = new Rabid(Me.Spellbook.Spell2);
@@ -162,24 +164,18 @@ namespace LoneDruidSharpRewrite
             {
                 this.pause = Game.IsPaused;
             }
+            Variable.Bear = ObjectManager.GetEntities<Unit>().Where(unit => unit.ClassID.Equals(ClassID.CDOTA_Unit_SpiritBear)).FirstOrDefault();
 
-            if(this.pause || Variable.Hero == null || !Variable.Hero.IsValid || !Variable.Hero.IsAlive)
+            if (this.pause || Variable.Hero == null || !Variable.Hero.IsValid || !Variable.Hero.IsAlive)
             {
                 this.pause = Game.IsPaused;
                 return;
             }
+            var CanIronTalon = Variable.MenuManager.AutoTalonActive && !Variable.BearChaseModeOn;
 
-            var meCanAction = !Me.IsInvisible() && !Me.IsChanneling();
-            var meIronTalonMode = Variable.MenuManager.AutoTalonActive && !Variable.BearChaseModeOn;
-
-            if (meIronTalonMode && meCanAction)
+            if (CanIronTalon)
             {
-                if (this.autoIronTalonSleeper.Sleeping)
-                {
-                    return;
-                }
-                autoIronTalon.Use();
-                this.autoIronTalonSleeper.Sleep(Game.Ping + 100);
+                autoIronTalon.Execute();
             }        
         }
         #endregion
@@ -191,23 +187,18 @@ namespace LoneDruidSharpRewrite
             {
                 this.pause = Game.IsPaused;
             }
-
+            Variable.Bear = ObjectManager.GetEntities<Unit>().Where(unit => unit.ClassID.Equals(ClassID.CDOTA_Unit_SpiritBear)).FirstOrDefault();
             if (this.pause || Variable.Bear == null || !Variable.Bear.IsValid || !Variable.Bear.IsAlive)
             {
                 this.pause = Game.IsPaused;
                 return;
             }
+            if (!Variable.AutoMidasModeOn) return;
+            var CanMidas = !Variable.BearChaseModeOn;
 
-            var bearCanAction = !Bear.IsInvisible() && !Bear.IsChanneling();
-
-            if (bearCanAction)
+            if (CanMidas)
             {
-                if (this.autoMidasSleeper.Sleeping)
-                {
-                    return;
-                }
-                autoMidas.Use();
-                this.autoMidasSleeper.Sleep(Game.Ping + 1000);
+                autoMidas.Execute();
             }
         }
         #endregion
@@ -268,37 +259,29 @@ namespace LoneDruidSharpRewrite
                 this.pause = Game.IsPaused;
                 return;
             }
+            //re openup Auto Midas and Auto IronTalon if no enemy is nearby me and Bear
+            var anyEnemyNearMe = ObjectManager.GetEntities<Hero>().Any(x => x.IsAlive && x.Team != Variable.Hero.Team
+                                                        && x.Distance2D(Me) <= 1000);
+            var anyEnemyNearBear = ObjectManager.GetEntities<Hero>().Any(x => x.IsAlive && x.Team != Variable.Hero.Team
+                                                        && x.Distance2D(Bear) <= 1000);
 
+            if(!anyEnemyNearBear && !anyEnemyNearMe)
+            {
+                if (!Variable.AutoTalonActive)
+                {
+                    //Variable.MenuManager.AutoTalonMenu.SetValue(new KeyBind(Variable.MenuManager.AutoTalonMenu.GetValue<KeyBind>().Key, KeyBindType.Toggle, true));
+                }
+                if (!Variable.AutoMidasModeOn)
+                {
+                    //Variable.MenuManager.AutoMidasMenu.SetValue(new KeyBind(Variable.MenuManager.AutoMidasMenu.GetValue<KeyBind>().Key, KeyBindType.Toggle, true));
+                }
+            }
+            if (Bear == null) return;
+            if (!Variable.BearChaseModeOn) return;
             this.targetFind.Find();
-
-            if(this.Target == null)
-            {
-                return;
-            }
-            //Bear Keep Chasing
-            //Console.WriteLine("target is " + this.Target.Name);
-
-            if(Bear.CanAttack() && !Bear.IsAttacking() && Bear.Distance2D(this.Target) <= 150)
-            {
-                if (Utils.SleepCheck("Attack"))
-                {
-                    Bear.Attack(this.Target);
-                    Utils.Sleep(500, "Attack");
-                }
-                else
-                {
-                    if (Utils.SleepCheck("Move"))
-                    {
-                        Bear.Move(this.Target.Position);
-                        Utils.Sleep(500, "Move");
-                    }
-                }
-            }
-
-
-
-
-
+            if (this.Target == null) return;                              
+            
+            UnitOrbwalk.Orbwalk(Bear, this.Target);
         }
         #endregion
 
@@ -323,27 +306,23 @@ namespace LoneDruidSharpRewrite
                 return;
             }
             lasthit.resetAutoAttackMode();
-
+            // re lock target
             if (Variable.BearChaseModeOn)
             {
-                if (this.Target.Distance2D(Game.MousePosition) < 200)
+                //should disable Auto Iron Talon and Midas until Noenemy is nearby
+                if (Variable.AutoTalonActive)
                 {
-                    this.targetFind.LockTarget();
-                    Console.WriteLine("Locked");
+                    Variable.MenuManager.AutoTalonMenu.SetValue(new KeyBind(Variable.MenuManager.AutoTalonMenu.GetValue<KeyBind>().Key, KeyBindType.Toggle, false));
                 }
-                else
+                if (Variable.AutoMidasModeOn)
                 {
-                    this.targetFind.UnlockTarget();
-                    this.targetFind.Find();
-                    if (this.Target.Distance2D(Game.MousePosition) < 200)
-                    {
-                        this.targetFind.LockTarget();
-                    }
+                    Variable.MenuManager.AutoMidasMenu.SetValue(new KeyBind(Variable.MenuManager.AutoMidasMenu.GetValue<KeyBind>().Key, KeyBindType.Toggle, false));
                 }
+                this.targetFind.UnlockTarget();
+                this.targetFind.Find();
+                this.targetFind.LockTarget();
             }
-
         }
-
 
     }
 }

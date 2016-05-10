@@ -73,38 +73,57 @@ namespace LoneDruidSharpRewrite.Utilities
             Drawing.DrawText(this.text, this.Position, this.textSize, this.Color, this.FontFlags);
         }
 
+        public void DrawTextAutoIronTalonText(bool on)
+        {
+            var startPos = new Vector2(Convert.ToSingle(Drawing.Width) - 200, Convert.ToSingle(Drawing.Height * 0.50));
+            this.text = "IronTalon" + " [" + Utils.KeyToText(Variable.MenuManager.AutoTalonMenu.GetValue<KeyBind>().Key) + "] " + (on ? "ON" : "OFF");
+            this.Position = startPos;
+            this.textSize = new Vector2(20);
+            this.Color = on ? Color.Yellow : Color.Red;
+            this.FontFlags = FontFlags.AntiAlias | FontFlags.DropShadow | FontFlags.Additive | FontFlags.Custom | FontFlags.StrikeOut;
+            this.Draw();
+        }
+
+        public void DrawTextAutoMidasText(bool on)
+        {
+            var startPos = new Vector2(Convert.ToSingle(Drawing.Width) - 200, Convert.ToSingle(Drawing.Height * 0.54));
+            this.text = "Midas" + " [" + Utils.KeyToText(Variable.MenuManager.AutoMidasMenu.GetValue<KeyBind>().Key) + "] " + (on ? "ON" : "OFF");
+            this.Position = startPos;
+            this.textSize = new Vector2(20);
+            this.Color = on ? Color.Yellow : Color.Red;
+            this.FontFlags = FontFlags.AntiAlias | FontFlags.DropShadow | FontFlags.Additive | FontFlags.Custom | FontFlags.StrikeOut;
+            this.Draw();
+        }
+
         public void DrawTextOnlyBearLastHitText(bool on)
         {
-            var startPos = new Vector2(Convert.ToSingle(Drawing.Width * 0.34), Convert.ToSingle(Drawing.Height * 0.78));
-            
+            var startPos = new Vector2(Convert.ToSingle(Drawing.Width) - 200, Convert.ToSingle(Drawing.Height * 0.58));
             this.text = "Bear Last Hit" + " [" + Utils.KeyToText(Variable.MenuManager.OnlyBearLastHitMenu.GetValue<KeyBind>().Key) + "] " + (on? "ON" : "OFF");
             this.Position = startPos;
             this.textSize = new Vector2(20);
-            this.Color = on? Color.Red : Color.Yellow;
+            this.Color = on? Color.Yellow : Color.Red;
             this.FontFlags = FontFlags.AntiAlias | FontFlags.DropShadow | FontFlags.Additive | FontFlags.Custom | FontFlags.StrikeOut;
             this.Draw();
         }
 
         public void DrawTextCombinedLastHitText(bool on)
         {
-            var startPos = new Vector2(Convert.ToSingle(Drawing.Width * 0.34), Convert.ToSingle(Drawing.Height * 0.78));
-
+            var startPos = new Vector2(Convert.ToSingle(Drawing.Width) - 200, Convert.ToSingle(Drawing.Height * 0.66));
             this.text = "Combined Last Hit" + " [" + Utils.KeyToText(Variable.MenuManager.CombinedLastHitMenu.GetValue<KeyBind>().Key) + "] " + (on ? "ON" : "OFF");
-            this.Position = startPos + new Vector2(200, 0);
+            this.Position = startPos;
             this.textSize = new Vector2(20);
-            this.Color = on ? Color.Red : Color.Yellow;
+            this.Color = on ? Color.Yellow : Color.Red;
             this.FontFlags = FontFlags.AntiAlias | FontFlags.DropShadow | FontFlags.Additive | FontFlags.Custom | FontFlags.StrikeOut;
             this.Draw();
         }
 
         public void DrawTextBearChaseText(bool on)
         {
-            var startPos = new Vector2(Convert.ToSingle(Drawing.Width * 0.34), Convert.ToSingle(Drawing.Height * 0.78));
-
-            this.text = "Bear Chasing!!" + " [" + Utils.KeyToText(Variable.MenuManager.BearChaseMenu.GetValue<KeyBind>().Key) + "] " + (on ? "ON" : "OFF");
-            this.Position = startPos + 2 * new Vector2(225, 0);
+            var startPos = new Vector2(Convert.ToSingle(Drawing.Width) - 200, Convert.ToSingle(Drawing.Height * 0.62));
+            this.text = "Bear Chasing!" + " [" + Utils.KeyToText(Variable.MenuManager.BearChaseMenu.GetValue<KeyBind>().Key) + "] ";
+            this.Position = startPos;
             this.textSize = new Vector2(20);
-            this.Color = on ? Color.Red : Color.Yellow;
+            this.Color = Color.HotPink;
             this.FontFlags = FontFlags.AntiAlias | FontFlags.DropShadow | FontFlags.Additive | FontFlags.Custom | FontFlags.StrikeOut;
             this.Draw();
         }
