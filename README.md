@@ -1,5 +1,7 @@
 # LoneDruidSharp
 
+**05/12/2016**
+- Added Bear Orbwalk, credits to Moones
 
 **05/09/2016**
 - Bear will Chase if you Press the Chase Key and a right click around the target to lock target

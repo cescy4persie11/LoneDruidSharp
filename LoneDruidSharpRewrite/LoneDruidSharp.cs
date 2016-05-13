@@ -10,28 +10,20 @@ using Ensage.Common.Objects;
 using global::LoneDruidSharpRewrite.Abilities;
 using global::LoneDruidSharpRewrite.Utilities;
 using Ensage.Common.Menu;
+using Ensage.Common.Objects.UtilityObjects;
 
 namespace LoneDruidSharpRewrite
 {
     public class LoneDruidSharp
     {
-        private readonly Sleeper lasthitSleeper;
-
-        private readonly Sleeper autoIronTalonSleeper;
-
-        private readonly Sleeper onlyBearLastHitSleeper;
-
-        private readonly Sleeper combinedLastHitSleeper;
-
-        private readonly Sleeper bearChaseSleeper;
-
-        private readonly Sleeper autoMidasSleeper;
 
         private AutoIronTalon autoIronTalon;
 
         private AutoMidas autoMidas;
 
         private SummonSpiritBear summonSpiritBear;
+
+        private static Dictionary<float, Orbwalker> orbwalkerDictionary = new Dictionary<float, Orbwalker>();
 
         private Lasthit lasthit;
 
@@ -47,12 +39,6 @@ namespace LoneDruidSharpRewrite
 
         public LoneDruidSharp()
         {
-            this.lasthitSleeper = new Sleeper();
-            this.autoIronTalonSleeper = new Sleeper();
-            this.onlyBearLastHitSleeper = new Sleeper();
-            this.combinedLastHitSleeper = new Sleeper();
-            this.bearChaseSleeper = new Sleeper();
-            this.autoMidasSleeper = new Sleeper();
             this.autoIronTalon = new AutoIronTalon();
             this.autoMidas = new AutoMidas();
             this.lasthit = new Lasthit();
@@ -260,6 +246,7 @@ namespace LoneDruidSharpRewrite
                 return;
             }
             //re openup Auto Midas and Auto IronTalon if no enemy is nearby me and Bear
+            /*
             var anyEnemyNearMe = ObjectManager.GetEntities<Hero>().Any(x => x.IsAlive && x.Team != Variable.Hero.Team
                                                         && x.Distance2D(Me) <= 1000);
             var anyEnemyNearBear = ObjectManager.GetEntities<Hero>().Any(x => x.IsAlive && x.Team != Variable.Hero.Team
@@ -280,8 +267,8 @@ namespace LoneDruidSharpRewrite
             if (!Variable.BearChaseModeOn) return;
             this.targetFind.Find();
             if (this.Target == null) return;                              
-            
-            UnitOrbwalk.Orbwalk(Bear, this.Target);
+            */
+            //UnitOrbwalk.Orbwalk(Bear, this.Target);
         }
         #endregion
 
@@ -297,6 +284,17 @@ namespace LoneDruidSharpRewrite
                 return;
             }
             
+        }
+
+        public void Events_OnUpdate()
+        {
+            if (!Variable.BearChaseModeOn) return;
+            if (Bear == null) return;
+            this.targetFind.Find();
+            if (this.Target == null || !this.Target.IsValid) return;
+            Orbwalker orbwalker = new Orbwalker(Bear);
+            orbwalkerDictionary.Add(Bear.Handle, orbwalker);
+            orbwalker.OrbwalkOn(this.Target, 0, 0, false, true);
         }
 
         public void Player_OnExecuteOrder(ExecuteOrderEventArgs args)
