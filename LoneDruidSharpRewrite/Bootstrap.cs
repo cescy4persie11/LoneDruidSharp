@@ -20,6 +20,7 @@ namespace LoneDruidSharpRewrite
         public void SubscribeEvents()
         {
             Events.OnLoad += this.Events_Onload;
+            Events.OnUpdate += this.Events_OnUpdate;
             Events.OnClose += this.Events_OnClose;
             Game.OnUpdate += this.Game_OnUpdate;
             //Game.OnWndProc += this.Game_OnWndProc;
@@ -48,6 +49,11 @@ namespace LoneDruidSharpRewrite
             this.lonedruidsharp.OnUpdate_AutoMidas();
             this.lonedruidsharp.OnUpdate_LastHit();
             this.lonedruidsharp.OnUpdate_bearChase();
+        }
+
+        private void Events_OnUpdate(EventArgs args)
+        {
+            this.lonedruidsharp.Events_OnUpdate();
         }
 
         private void Game_OnWndProc(WndEventArgs args)

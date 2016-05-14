@@ -115,9 +115,13 @@
     <Compile Include="Utilities\Lasthit.cs" />
     <Compile Include="Utilities\MenuManager.cs" />
     <Compile Include="Utilities\Move.cs" />
+    <Compile Include="Utilities\Orbwalk\AttackAnimationTracker.cs" />
+    <Compile Include="Utilities\Orbwalk\Attacker.cs" />
+    <Compile Include="Utilities\Orbwalk\Orbwalker.cs" />
+    <Compile Include="Utilities\Orbwalk\Orbwalking.cs" />
+    <Compile Include="Utilities\Orbwalk\Sleeper.cs" />
     <Compile Include="Utilities\Sleeper.cs" />
     <Compile Include="Utilities\TargetFind.cs" />
-    <Compile Include="Utilities\UnitOrbwalk.cs" />
     <Compile Include="Variable.cs" />
   </ItemGroup>
   <ItemGroup>

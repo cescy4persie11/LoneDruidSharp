@@ -123,7 +123,7 @@ namespace LoneDruidSharpRewrite.Utilities
             this.text = "Bear Chasing!" + " [" + Utils.KeyToText(Variable.MenuManager.BearChaseMenu.GetValue<KeyBind>().Key) + "] ";
             this.Position = startPos;
             this.textSize = new Vector2(20);
-            this.Color = Color.HotPink;
+            this.Color = on? Color.HotPink : Color.Red;
             this.FontFlags = FontFlags.AntiAlias | FontFlags.DropShadow | FontFlags.Additive | FontFlags.Custom | FontFlags.StrikeOut;
             this.Draw();
         }
